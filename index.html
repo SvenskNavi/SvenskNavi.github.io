@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0">
-<title>Picker</title>
+<title>K-pop Idol Picker</title>
 <style>
 body {
-    background:#FFF;
-    color:#000;
+    background:#222;
+    color:#DDD;
     font-family:verdana, sans-serif;
     font-size:10pt;
     margin:0;
@@ -59,29 +59,6 @@ button.disabled:hover {
     overflow:hidden;
 }
 
-@media (min-width:1024px) {
-    /* Put the found favorites beside the picking div when the window is sufficiently large */
-    #picking {
-        float:left;
-        width:636px;
-    }
-
-    #secondary {
-        margin-left:646px;
-    }
-}
-
-@media (min-width:1300px) {
-    /* Once we get to the point where 636px is less than half of the width of the screen, make the picking div just take up half */
-    #picking {
-        width:50%;
-    }
-
-    #secondary {
-        margin-left:51%;
-    }
-}
-
 #pick {
     background:#58F;
     color:#FFF;
@@ -109,9 +86,9 @@ button.disabled:hover {
 .item-list li {
     margin:0;
     display:inline-block;
-    height:300px;
-    width:300px;
-    line-height:100px;
+    height:200px;
+    width:200px;
+    line-height:200px;
     border:3px solid transparent;
     text-align:center;
     position:relative;
@@ -120,6 +97,12 @@ button.disabled:hover {
     border-radius:100%;
     background:#F7F7F7;
     color:#000;
+}
+
+#picking .item-list li {
+    height:500px;
+    width:500px;
+    line-height:500px;
 }
 
 .item-list li img {
@@ -206,9 +189,9 @@ button.disabled:hover {
 </style>
 </head>
 <body>
-<h1>Picker</h1>
+<h1>K-pop Idol Picker</h1>
 
-<p>You can include any content you want here.</p>
+<p>Find your favorite k-pop idol!</p>
 
 <div id="container">
 
@@ -216,7 +199,7 @@ button.disabled:hover {
 <ul id="evaluating" class="item-list">
 </ul>
 
-<p id="buttons"><button id="pick">Pick</button> <button id="pass">Pass</button> <button id="undo">Undo</button> <button id="redo">Redo</button></p>
+<p id="buttons"><button id="pick">Pick</button> <button id="pass">Pass</button> <button id="undo">Undo</button> <button id="redo">Redo</button> <button id="reset">Reset</button></p>
 </div>
 
 <div id="secondary">
@@ -234,110 +217,225 @@ button.disabled:hover {
 'use strict';
 
 var items = [
-    {id: 'aespa-giselle', name: 'aespa: Giselle', image: '/images/aespa/Giselle.jpg'},
-    {id: 'aespa-karina', name: 'aespa: Karina', image: '/images/aespa/Karina.jpg'},
-    {id: 'aespa-ningning', name: 'aespa: NingNing', image: '/images/aespa/NingNing.jpg'},
-    {id: 'aespa-winter', name: 'aespa: Winter', image: '/images/aespa/Winter.jpg'},
+    {id: 'aespa-giselle', name: 'aespa: Giselle', image: '/images/aespa/Giselle.webp'},
+    {id: 'aespa-karina', name: 'aespa: Karina', image: '/images/aespa/Karina.webp'},
+    {id: 'aespa-ningning', name: 'aespa: Ningning', image: '/images/aespa/Ningning.webp'},
+    {id: 'aespa-winter', name: 'aespa: Winter', image: '/images/aespa/Winter.webp'},
     {id: 'babymonster-ahyeon', name: 'BABYMONSTER: Ahyeon', image: '/images/BABYMONSTER/Ahyeon.webp'},
     {id: 'babymonster-asa', name: 'BABYMONSTER: Asa', image: '/images/BABYMONSTER/Asa.webp'},
     {id: 'babymonster-chiquita', name: 'BABYMONSTER: Chiquita', image: '/images/BABYMONSTER/Chiquita.webp'},
     {id: 'babymonster-pharita', name: 'BABYMONSTER: Pharita', image: '/images/BABYMONSTER/Pharita.webp'},
-    {id: 'babymonster-rami', name: 'BABYMONSTER: Rami', image: '/images/BABYMONSTER/Rami.jpeg'},
+    {id: 'babymonster-rami', name: 'BABYMONSTER: Rami', image: '/images/BABYMONSTER/Rami.webp'},
     {id: 'babymonster-rora', name: 'BABYMONSTER: Rora', image: '/images/BABYMONSTER/Rora.webp'},
     {id: 'babymonster-ruka', name: 'BABYMONSTER: Ruka', image: '/images/BABYMONSTER/Ruka.webp'},
-    {id: 'badvillain-chloe young', name: 'BADVILLAIN: Chloe Young', image: '/images/BADVILLAIN/Chloe Young.jpg'},
-    {id: 'badvillain-emma', name: 'BADVILLAIN: Emma', image: '/images/BADVILLAIN/Emma.jpg'},
-    {id: 'badvillain-hu\'e', name: 'BADVILLAIN: HU\'E', image: '/images/BADVILLAIN/HU\'E.jpg'},
-    {id: 'badvillain-ina', name: 'BADVILLAIN: INA', image: '/images/BADVILLAIN/INA.jpg'},
-    {id: 'badvillain-kelly', name: 'BADVILLAIN: Kelly', image: '/images/BADVILLAIN/Kelly.jpg'},
-    {id: 'badvillain-vin', name: 'BADVILLAIN: Vin', image: '/images/BADVILLAIN/Vin.jpg'},
-    {id: 'badvillain-yunseo', name: 'BADVILLAIN: YunSeo', image: '/images/BADVILLAIN/YunSeo.jpg'},
-    {id: 'billlie-haram', name: 'Billlie: Haram', image: '/images/Billlie/Haram.avif'},
-    {id: 'billlie-haruna', name: 'Billlie: Haruna', image: '/images/Billlie/Haruna.avif'},
-    {id: 'billlie-moon sua', name: 'Billlie: Moon Sua', image: '/images/Billlie/Moon Sua.avif'},
-    {id: 'billlie-sheon', name: 'Billlie: Sheon', image: '/images/Billlie/Sheon.avif'},
-    {id: 'billlie-siyoon', name: 'Billlie: Siyoon', image: '/images/Billlie/Siyoon.avif'},
-    {id: 'billlie-suhyeon', name: 'Billlie: Suhyeon', image: '/images/Billlie/Suhyeon.avif'},
-    {id: 'billlie-tsuki', name: 'Billlie: Tsuki', image: '/images/Billlie/Tsuki.avif'},
-    {id: 'blackpink-jennie', name: 'BLACKPINK: Jennie', image: '/images/BLACKPINK/Jennie.jpg'},
-    {id: 'blackpink-jisoo', name: 'BLACKPINK: Jisoo', image: '/images/BLACKPINK/Jisoo.jpg'},
-    {id: 'blackpink-lisa', name: 'BLACKPINK: Lisa', image: '/images/BLACKPINK/Lisa.jpg'},
-    {id: 'blackpink-rosé', name: 'BLACKPINK: Rosé', image: '/images/BLACKPINK/Rosé.jpg'},
-    {id: 'hearts2hearts-a-na', name: 'Hearts2Hearts: A-na', image: '/images/Hearts2Hearts/A-na.jpg'},
-    {id: 'hearts2hearts-carmen', name: 'Hearts2Hearts: Carmen', image: '/images/Hearts2Hearts/Carmen.jpg'},
-    {id: 'hearts2hearts-ian', name: 'Hearts2Hearts: Ian', image: '/images/Hearts2Hearts/Ian.jpg'},
-    {id: 'hearts2hearts-jiwoo', name: 'Hearts2Hearts: Jiwoo', image: '/images/Hearts2Hearts/Jiwoo.jpg'},
-    {id: 'hearts2hearts-juun', name: 'Hearts2Hearts: Juun', image: '/images/Hearts2Hearts/Juun.jpg'},
-    {id: 'hearts2hearts-stella', name: 'Hearts2Hearts: Stella', image: '/images/Hearts2Hearts/Stella.jpg'},
-    {id: 'hearts2hearts-ye-on', name: 'Hearts2Hearts: Ye-on', image: '/images/Hearts2Hearts/Ye-on.jpg'},
-    {id: 'hearts2hearts-yuha', name: 'Hearts2Hearts: Yuha', image: '/images/Hearts2Hearts/Yuha.jpg'},
-    {id: 'i-dle-minnie', name: 'i-dle: Minnie', image: '/images/i-dle/Minnie.jpg'},
-    {id: 'i-dle-miyeon', name: 'i-dle: Miyeon', image: '/images/i-dle/Miyeon.jpg'},
-    {id: 'i-dle-shuhua', name: 'i-dle: Shuhua', image: '/images/i-dle/Shuhua.jpg'},
-    {id: 'i-dle-soojin', name: 'i-dle: Soojin', image: '/images/i-dle/Soojin.jpg'},
-    {id: 'i-dle-soyeon', name: 'i-dle: Soyeon', image: '/images/i-dle/Soyeon.jpg'},
-    {id: 'i-dle-yuqi', name: 'i-dle: Yuqi', image: '/images/i-dle/Yuqi.jpg'},
-    {id: 'illit-iroha', name: 'ILLIT: Iroha', image: '/images/ILLIT/Iroha.jpeg'},
-    {id: 'illit-minju', name: 'ILLIT: Minju', image: '/images/ILLIT/Minju.jpeg'},
-    {id: 'illit-moka', name: 'ILLIT: Moka', image: '/images/ILLIT/Moka.jpeg'},
-    {id: 'illit-wonhee', name: 'ILLIT: Wonhee', image: '/images/ILLIT/Wonhee.jpeg'},
-    {id: 'illit-yunah', name: 'ILLIT: Yunah', image: '/images/ILLIT/Yunah.jpeg'},
-    {id: 'itzy-chaeryeong', name: 'ITZY: Chaeryeong', image: '/images/ITZY/Chaeryeong.jpg'},
-    {id: 'itzy-lia', name: 'ITZY: Lia', image: '/images/ITZY/Lia.jpg'},
-    {id: 'itzy-ryujin', name: 'ITZY: Ryujin', image: '/images/ITZY/Ryujin.jpg'},
-    {id: 'itzy-yeji', name: 'ITZY: Yeji', image: '/images/ITZY/Yeji.jpg'},
-    {id: 'itzy-yuna', name: 'ITZY: Yuna', image: '/images/ITZY/Yuna.jpg'},
-    {id: 'ive-gaeul', name: 'IVE: Gaeul', image: '/images/IVE/Gaeul.jpg'},
-    {id: 'ive-leeoseo', name: 'IVE: Leeoseo', image: '/images/IVE/Leeoseo.jpg'},
-    {id: 'ive-liz', name: 'IVE: Liz', image: '/images/IVE/Liz.jpg'},
-    {id: 'ive-rei', name: 'IVE: Rei', image: '/images/IVE/Rei.jpg'},
-    {id: 'ive-wonyoung', name: 'IVE: Wonyoung', image: '/images/IVE/Wonyoung.jpg'},
-    {id: 'ive-yujin', name: 'IVE: Yujin', image: '/images/IVE/Yujin.jpg'},
-    {id: 'izna-jeemin', name: 'izna: Jeemin', image: '/images/izna/Jeemin.jpg'},
-    {id: 'izna-jiyoon', name: 'izna: Jiyoon', image: '/images/izna/Jiyoon.jpg'},
-    {id: 'izna-jungeun', name: 'izna: Jungeun', image: '/images/izna/Jungeun.jpg'},
-    {id: 'izna-koko', name: 'izna: Koko', image: '/images/izna/Koko.jpg'},
-    {id: 'izna-mai', name: 'izna: Mai', image: '/images/izna/Mai.jpg'},
-    {id: 'izna-saebi', name: 'izna: Saebi', image: '/images/izna/Saebi.jpg'},
-    {id: 'izna-sarang', name: 'izna: Sarang', image: '/images/izna/Sarang.jpg'},
-    {id: 'kiss of life-belle', name: 'KISS OF LIFE: Belle', image: '/images/KISS OF LIFE/Belle.jpg'},
-    {id: 'kiss of life-haneul', name: 'KISS OF LIFE: Haneul', image: '/images/KISS OF LIFE/Haneul.jpg'},
-    {id: 'kiss of life-julie', name: 'KISS OF LIFE: Julie', image: '/images/KISS OF LIFE/Julie.jpg'},
-    {id: 'kiss of life-natty', name: 'KISS OF LIFE: Natty', image: '/images/KISS OF LIFE/Natty.jpg'},
-    {id: 'le sserafim-chaewon', name: 'LE SSERAFIM: Chaewon', image: '/images/LE SSERAFIM/Chaewon.jpg'},
-    {id: 'le sserafim-eunchae', name: 'LE SSERAFIM: Eunchae', image: '/images/LE SSERAFIM/Eunchae.jpg'},
-    {id: 'le sserafim-garam', name: 'LE SSERAFIM: Garam', image: '/images/LE SSERAFIM/Garam.avif'},
-    {id: 'le sserafim-kazuha', name: 'LE SSERAFIM: Kazuha', image: '/images/LE SSERAFIM/Kazuha.jpg'},
-    {id: 'le sserafim-sakura', name: 'LE SSERAFIM: Sakura', image: '/images/LE SSERAFIM/Sakura.jpg'},
-    {id: 'le sserafim-yunjin', name: 'LE SSERAFIM: Yunjin', image: '/images/LE SSERAFIM/Yunjin.jpg'},
-    {id: 'newjeans-danielle', name: 'NewJeans: Danielle', image: '/images/NewJeans/Danielle.jpg'},
-    {id: 'newjeans-haerin', name: 'NewJeans: Haerin', image: '/images/NewJeans/Haerin.png'},
-    {id: 'newjeans-hanni', name: 'NewJeans: Hanni', image: '/images/NewJeans/Hanni.png'},
-    {id: 'newjeans-hyein', name: 'NewJeans: Hyein', image: '/images/NewJeans/Hyein.jpg'},
-    {id: 'newjeans-minji', name: 'NewJeans: Minji', image: '/images/NewJeans/Minji.jpg'},
-    {id: 'nmixx-bae', name: 'NMIXX: Bae', image: '/images/NMIXX/Bae.jpg'},
-    {id: 'nmixx-haewon', name: 'NMIXX: Haewon', image: '/images/NMIXX/Haewon.jpg'},
-    {id: 'nmixx-jinni', name: 'NMIXX: Jinni', image: '/images/NMIXX/Jinni.avif'},
-    {id: 'nmixx-jiwoo', name: 'NMIXX: Jiwoo', image: '/images/NMIXX/Jiwoo.jpg'},
-    {id: 'nmixx-kyujin', name: 'NMIXX: Kyujin', image: '/images/NMIXX/Kyujin.jpg'},
-    {id: 'nmixx-lily', name: 'NMIXX: Lily', image: '/images/NMIXX/Lily.jpg'},
-    {id: 'nmixx-sullyoon', name: 'NMIXX: Sullyoon', image: '/images/NMIXX/Sullyoon.jpg'},
-    {id: 'purple kiss-chaein', name: 'PURPLE KISS: Chaein', image: '/images/PURPLE KISS/Chaein.jpg'},
-    {id: 'purple kiss-dosie', name: 'PURPLE KISS: Dosie', image: '/images/PURPLE KISS/Dosie.jpg'},
-    {id: 'purple kiss-goeun', name: 'PURPLE KISS: Goeun', image: '/images/PURPLE KISS/Goeun.jpg'},
-    {id: 'purple kiss-ireh', name: 'PURPLE KISS: Ireh', image: '/images/PURPLE KISS/Ireh.jpg'},
-    {id: 'purple kiss-jieun', name: 'PURPLE KISS: Jieun', image: '/images/PURPLE KISS/Jieun.avif'},
-    {id: 'purple kiss-swan', name: 'PURPLE KISS: Swan', image: '/images/PURPLE KISS/Swan.jpg'},
-    {id: 'purple kiss-yuki', name: 'PURPLE KISS: Yuki', image: '/images/PURPLE KISS/Yuki.jpg'},
-    {id: 'red velvet-irene', name: 'Red Velvet: Irene', image: '/images/Red Velvet/Irene.jpg'},
-    {id: 'red velvet-joy', name: 'Red Velvet: Joy', image: '/images/Red Velvet/Joy.jpg'},
-    {id: 'red velvet-seulgi', name: 'Red Velvet: Seulgi', image: '/images/Red Velvet/Seulgi.jpg'},
-    {id: 'red velvet-wendy', name: 'Red Velvet: Wendy', image: '/images/Red Velvet/Wendy.jpg'},
-    {id: 'red velvet-yeri', name: 'Red Velvet: Yeri', image: '/images/Red Velvet/Yeri.jpg'}
+    {id: 'badvillain-chloe young', name: 'BADVILLAIN: Chloe Young', image: '/images/BADVILLAIN/Chloe Young.webp'},
+    {id: 'badvillain-emma', name: 'BADVILLAIN: Emma', image: '/images/BADVILLAIN/Emma.webp'},
+    {id: 'badvillain-hu\'e', name: 'BADVILLAIN: HU\'E', image: '/images/BADVILLAIN/HU\'E.webp'},
+    {id: 'badvillain-ina', name: 'BADVILLAIN: INA', image: '/images/BADVILLAIN/INA.webp'},
+    {id: 'badvillain-kelly', name: 'BADVILLAIN: Kelly', image: '/images/BADVILLAIN/Kelly.webp'},
+    {id: 'badvillain-vin', name: 'BADVILLAIN: Vin', image: '/images/BADVILLAIN/Vin.webp'},
+    {id: 'badvillain-yunseo', name: 'BADVILLAIN: YunSeo', image: '/images/BADVILLAIN/YunSeo.webp'},
+    {id: 'billlie-haram', name: 'Billlie: Haram', image: '/images/Billlie/Haram.webp'},
+    {id: 'billlie-haruna', name: 'Billlie: Haruna', image: '/images/Billlie/Haruna.webp'},
+    {id: 'billlie-moon sua', name: 'Billlie: Moon Sua', image: '/images/Billlie/Moon Sua.webp'},
+    {id: 'billlie-sheon', name: 'Billlie: Sheon', image: '/images/Billlie/Sheon.webp'},
+    {id: 'billlie-siyoon', name: 'Billlie: Siyoon', image: '/images/Billlie/Siyoon.webp'},
+    {id: 'billlie-suhyeon', name: 'Billlie: Suhyeon', image: '/images/Billlie/Suhyeon.webp'},
+    {id: 'billlie-tsuki', name: 'Billlie: Tsuki', image: '/images/Billlie/Tsuki.webp'},
+    {id: 'blackpink-jennie', name: 'BLACKPINK: Jennie', image: '/images/BLACKPINK/Jennie.webp'},
+    {id: 'blackpink-jisoo', name: 'BLACKPINK: Jisoo', image: '/images/BLACKPINK/Jisoo.webp'},
+    {id: 'blackpink-lisa', name: 'BLACKPINK: Lisa', image: '/images/BLACKPINK/Lisa.webp'},
+    {id: 'blackpink-rosé', name: 'BLACKPINK: Rosé', image: '/images/BLACKPINK/Rosé.webp'},
+    {id: 'dreamcatcher-dami', name: 'Dreamcatcher: Dami', image: '/images/Dreamcatcher/Dami.webp'},
+    {id: 'dreamcatcher-gahyun', name: 'Dreamcatcher: Gahyun', image: '/images/Dreamcatcher/Gahyun.webp'},
+    {id: 'dreamcatcher-handong', name: 'Dreamcatcher: Handong', image: '/images/Dreamcatcher/Handong.webp'},
+    {id: 'dreamcatcher-jiu', name: 'Dreamcatcher: JiU', image: '/images/Dreamcatcher/JiU.webp'},
+    {id: 'dreamcatcher-siyeon', name: 'Dreamcatcher: Siyeon', image: '/images/Dreamcatcher/Siyeon.webp'},
+    {id: 'dreamcatcher-sua', name: 'Dreamcatcher: SuA', image: '/images/Dreamcatcher/SuA.webp'},
+    {id: 'dreamcatcher-yoohyeon', name: 'Dreamcatcher: Yoohyeon', image: '/images/Dreamcatcher/Yoohyeon.webp'},
+    {id: 'everglow-aisha', name: 'EVERGLOW: Aisha', image: '/images/EVERGLOW/Aisha.webp'},
+    {id: 'everglow-eu', name: 'EVERGLOW: E:U', image: '/images/EVERGLOW/EU.webp'},
+    {id: 'everglow-mia', name: 'EVERGLOW: Mia', image: '/images/EVERGLOW/Mia.webp'},
+    {id: 'everglow-onda', name: 'EVERGLOW: Onda', image: '/images/EVERGLOW/Onda.webp'},
+    {id: 'everglow-sihyeon', name: 'EVERGLOW: Sihyeon', image: '/images/EVERGLOW/Sihyeon.webp'},
+    {id: 'everglow-yiren', name: 'EVERGLOW: Yiren', image: '/images/EVERGLOW/Yiren.webp'},
+    {id: 'fromis_9-chaeyoung', name: 'fromis_9: Chaeyoung', image: '/images/fromis_9/Chaeyoung.webp'},
+    {id: 'fromis_9-gyuri', name: 'fromis_9: Gyuri', image: '/images/fromis_9/Gyuri.webp'},
+    {id: 'fromis_9-hayoung', name: 'fromis_9: Hayoung', image: '/images/fromis_9/Hayoung.webp'},
+    {id: 'fromis_9-jiheon', name: 'fromis_9: Jiheon', image: '/images/fromis_9/Jiheon.webp'},
+    {id: 'fromis_9-jisun', name: 'fromis_9: Jisun', image: '/images/fromis_9/Jisun.webp'},
+    {id: 'fromis_9-jiwon', name: 'fromis_9: Jiwon', image: '/images/fromis_9/Jiwon.webp'},
+    {id: 'fromis_9-nagyung', name: 'fromis_9: Nagyung', image: '/images/fromis_9/Nagyung.webp'},
+    {id: 'fromis_9-saerom', name: 'fromis_9: Saerom', image: '/images/fromis_9/Saerom.webp'},
+    {id: 'fromis_9-seoyeon', name: 'fromis_9: Seoyeon', image: '/images/fromis_9/Seoyeon.webp'},
+    {id: 'gfriend-eunha', name: 'GFRIEND: Eunha', image: '/images/GFRIEND/Eunha.webp'},
+    {id: 'gfriend-sinb', name: 'GFRIEND: SinB', image: '/images/GFRIEND/SinB.webp'},
+    {id: 'gfriend-sowon', name: 'GFRIEND: Sowon', image: '/images/GFRIEND/Sowon.webp'},
+    {id: 'gfriend-umji', name: 'GFRIEND: Umji', image: '/images/GFRIEND/Umji.webp'},
+    {id: 'gfriend-yerin', name: 'GFRIEND: Yerin', image: '/images/GFRIEND/Yerin.webp'},
+    {id: 'gfriend-yuju', name: 'GFRIEND: Yuju', image: '/images/GFRIEND/Yuju.webp'},
+    {id: 'hearts2hearts-a-na', name: 'Hearts2Hearts: A-na', image: '/images/Hearts2Hearts/A-na.webp'},
+    {id: 'hearts2hearts-carmen', name: 'Hearts2Hearts: Carmen', image: '/images/Hearts2Hearts/Carmen.webp'},
+    {id: 'hearts2hearts-ian', name: 'Hearts2Hearts: Ian', image: '/images/Hearts2Hearts/Ian.webp'},
+    {id: 'hearts2hearts-jiwoo', name: 'Hearts2Hearts: Jiwoo', image: '/images/Hearts2Hearts/Jiwoo.webp'},
+    {id: 'hearts2hearts-juun', name: 'Hearts2Hearts: Juun', image: '/images/Hearts2Hearts/Juun.webp'},
+    {id: 'hearts2hearts-stella', name: 'Hearts2Hearts: Stella', image: '/images/Hearts2Hearts/Stella.webp'},
+    {id: 'hearts2hearts-ye-on', name: 'Hearts2Hearts: Ye-on', image: '/images/Hearts2Hearts/Ye-on.webp'},
+    {id: 'hearts2hearts-yuha', name: 'Hearts2Hearts: Yuha', image: '/images/Hearts2Hearts/Yuha.webp'},
+    {id: 'i-dle-minnie', name: 'i-dle: Minnie', image: '/images/i-dle/Minnie.webp'},
+    {id: 'i-dle-miyeon', name: 'i-dle: Miyeon', image: '/images/i-dle/Miyeon.webp'},
+    {id: 'i-dle-shuhua', name: 'i-dle: Shuhua', image: '/images/i-dle/Shuhua.webp'},
+    {id: 'i-dle-soojin', name: 'i-dle: Soojin', image: '/images/i-dle/Soojin.webp'},
+    {id: 'i-dle-soyeon', name: 'i-dle: Soyeon', image: '/images/i-dle/Soyeon.webp'},
+    {id: 'i-dle-yuqi', name: 'i-dle: Yuqi', image: '/images/i-dle/Yuqi.webp'},
+    {id: 'illit-iroha', name: 'ILLIT: Iroha', image: '/images/ILLIT/Iroha.webp'},
+    {id: 'illit-minju', name: 'ILLIT: Minju', image: '/images/ILLIT/Minju.webp'},
+    {id: 'illit-moka', name: 'ILLIT: Moka', image: '/images/ILLIT/Moka.webp'},
+    {id: 'illit-wonhee', name: 'ILLIT: Wonhee', image: '/images/ILLIT/Wonhee.webp'},
+    {id: 'illit-yunah', name: 'ILLIT: Yunah', image: '/images/ILLIT/Yunah.webp'},
+    {id: 'itzy-chaeryeong', name: 'ITZY: Chaeryeong', image: '/images/ITZY/Chaeryeong.webp'},
+    {id: 'itzy-lia', name: 'ITZY: Lia', image: '/images/ITZY/Lia.webp'},
+    {id: 'itzy-ryujin', name: 'ITZY: Ryujin', image: '/images/ITZY/Ryujin.webp'},
+    {id: 'itzy-yeji', name: 'ITZY: Yeji', image: '/images/ITZY/Yeji.webp'},
+    {id: 'itzy-yuna', name: 'ITZY: Yuna', image: '/images/ITZY/Yuna.webp'},
+    {id: 'ive-gaeul', name: 'IVE: Gaeul', image: '/images/IVE/Gaeul.webp'},
+    {id: 'ive-leeseo', name: 'IVE: Leeseo', image: '/images/IVE/Leeseo.webp'},
+    {id: 'ive-liz', name: 'IVE: Liz', image: '/images/IVE/Liz.webp'},
+    {id: 'ive-rei', name: 'IVE: Rei', image: '/images/IVE/Rei.webp'},
+    {id: 'ive-wonyoung', name: 'IVE: Wonyoung', image: '/images/IVE/Wonyoung.webp'},
+    {id: 'ive-yujin', name: 'IVE: Yujin', image: '/images/IVE/Yujin.webp'},
+    {id: 'izna-jeemin', name: 'izna: Jeemin', image: '/images/izna/Jeemin.webp'},
+    {id: 'izna-jiyoon', name: 'izna: Jiyoon', image: '/images/izna/Jiyoon.webp'},
+    {id: 'izna-jungeun', name: 'izna: Jungeun', image: '/images/izna/Jungeun.webp'},
+    {id: 'izna-koko', name: 'izna: Koko', image: '/images/izna/Koko.webp'},
+    {id: 'izna-mai', name: 'izna: Mai', image: '/images/izna/Mai.webp'},
+    {id: 'izna-saebi', name: 'izna: Saebi', image: '/images/izna/Saebi.webp'},
+    {id: 'izna-sarang', name: 'izna: Sarang', image: '/images/izna/Sarang.webp'},
+    {id: 'izone-chaeyeon', name: 'IZ*ONE: Chaeyeon', image: '/images/IZONE/Chaeyeon.webp'},
+    {id: 'izone-eunbi', name: 'IZ*ONE: Eunbi', image: '/images/IZONE/Eunbi.webp'},
+    {id: 'izone-hitomi', name: 'IZ*ONE: Hitomi', image: '/images/IZONE/Hitomi.webp'},
+    {id: 'izone-hyewon', name: 'IZ*ONE: Hyewon', image: '/images/IZONE/Hyewon.webp'},
+    {id: 'izone-minju', name: 'IZ*ONE: Minju', image: '/images/IZONE/Minju.webp'},
+    {id: 'izone-nako', name: 'IZ*ONE: Nako', image: '/images/IZONE/Nako.webp'},
+    {id: 'izone-yena', name: 'IZ*ONE: Yena', image: '/images/IZONE/Yena.webp'},
+    {id: 'izone-yuri', name: 'IZ*ONE: Yuri', image: '/images/IZONE/Yuri.webp'},
+    {id: 'kandis-hello', name: 'Kandis: Hello', image: '/images/Kandis/Hello.webp'},
+    {id: 'kandis-looky', name: 'Kandis: Looky', image: '/images/Kandis/Looky.webp'},
+    {id: 'kandis-nine', name: 'Kandis: Nine', image: '/images/Kandis/Nine.webp'},
+    {id: 'kandis-venny', name: 'Kandis: Venny', image: '/images/Kandis/Venny.webp'},
+    {id: 'kep1er-chaehyun', name: 'Kep1er: Chaehyun', image: '/images/Kep1er/Chaehyun.webp'},
+    {id: 'kep1er-dayeon', name: 'Kep1er: Dayeon', image: '/images/Kep1er/Dayeon.webp'},
+    {id: 'kep1er-hikaru', name: 'Kep1er: Hikaru', image: '/images/Kep1er/Hikaru.webp'},
+    {id: 'kep1er-huening bahiyyih', name: 'Kep1er: Huening Bahiyyih', image: '/images/Kep1er/Huening Bahiyyih.webp'},
+    {id: 'kep1er-xiaoting', name: 'Kep1er: Xiaoting', image: '/images/Kep1er/Xiaoting.webp'},
+    {id: 'kep1er-youngeun', name: 'Kep1er: Youngeun', image: '/images/Kep1er/Youngeun.webp'},
+    {id: 'kep1er-yujin', name: 'Kep1er: Yujin', image: '/images/Kep1er/Yujin.webp'},
+    {id: 'kiss of life-belle', name: 'KISS OF LIFE: Belle', image: '/images/KISS OF LIFE/Belle.webp'},
+    {id: 'kiss of life-haneul', name: 'KISS OF LIFE: Haneul', image: '/images/KISS OF LIFE/Haneul.webp'},
+    {id: 'kiss of life-julie', name: 'KISS OF LIFE: Julie', image: '/images/KISS OF LIFE/Julie.webp'},
+    {id: 'kiss of life-natty', name: 'KISS OF LIFE: Natty', image: '/images/KISS OF LIFE/Natty.webp'},
+    {id: 'le sserafim-chaewon', name: 'LE SSERAFIM: Chaewon', image: '/images/LE SSERAFIM/Chaewon.webp'},
+    {id: 'le sserafim-eunchae', name: 'LE SSERAFIM: Eunchae', image: '/images/LE SSERAFIM/Eunchae.webp'},
+    {id: 'le sserafim-garam', name: 'LE SSERAFIM: Garam', image: '/images/LE SSERAFIM/Garam.webp'},
+    {id: 'le sserafim-kazuha', name: 'LE SSERAFIM: Kazuha', image: '/images/LE SSERAFIM/Kazuha.webp'},
+    {id: 'le sserafim-sakura', name: 'LE SSERAFIM: Sakura', image: '/images/LE SSERAFIM/Sakura.webp'},
+    {id: 'le sserafim-yunjin', name: 'LE SSERAFIM: Yunjin', image: '/images/LE SSERAFIM/Yunjin.webp'},
+    {id: 'loona-choerry', name: 'LOONA: Choerry', image: '/images/LOONA/Choerry.webp'},
+    {id: 'loona-chuu', name: 'LOONA: Chuu', image: '/images/LOONA/Chuu.webp'},
+    {id: 'loona-go won', name: 'LOONA: Go Won', image: '/images/LOONA/Go Won.webp'},
+    {id: 'loona-haseul', name: 'LOONA: HaSeul', image: '/images/LOONA/HaSeul.webp'},
+    {id: 'loona-heejin', name: 'LOONA: HeeJin', image: '/images/LOONA/HeeJin.webp'},
+    {id: 'loona-hyeju', name: 'LOONA: HyeJu', image: '/images/LOONA/HyeJu.webp'},
+    {id: 'loona-hyunjin', name: 'LOONA: HyunJin', image: '/images/LOONA/HyunJin.webp'},
+    {id: 'loona-jinsoul', name: 'LOONA: JinSoul', image: '/images/LOONA/JinSoul.webp'},
+    {id: 'loona-kim lip', name: 'LOONA: Kim Lip', image: '/images/LOONA/Kim Lip.webp'},
+    {id: 'loona-vivi', name: 'LOONA: ViVi', image: '/images/LOONA/ViVi.webp'},
+    {id: 'loona-yeojin', name: 'LOONA: YeoJin', image: '/images/LOONA/YeoJin.webp'},
+    {id: 'loona-yves', name: 'LOONA: Yves', image: '/images/LOONA/Yves.webp'},
+    {id: 'madein-gaeun', name: 'MADEIN: Gaeun', image: '/images/MADEIN/Gaeun.webp'},
+    {id: 'madein-mashiro', name: 'MADEIN: Mashiro', image: '/images/MADEIN/Mashiro.webp'},
+    {id: 'madein-miu', name: 'MADEIN: MiU', image: '/images/MADEIN/MiU.webp'},
+    {id: 'madein-nagomi', name: 'MADEIN: Nagomi', image: '/images/MADEIN/Nagomi.webp'},
+    {id: 'madein-serina', name: 'MADEIN: Serina', image: '/images/MADEIN/Serina.webp'},
+    {id: 'madein-suhye', name: 'MADEIN: Suhye', image: '/images/MADEIN/Suhye.webp'},
+    {id: 'madein-yeseo', name: 'MADEIN: Yeseo', image: '/images/MADEIN/Yeseo.webp'},
+    {id: 'meovv-anna', name: 'MEOVV: Anna', image: '/images/MEOVV/Anna.webp'},
+    {id: 'meovv-ella', name: 'MEOVV: Ella', image: '/images/MEOVV/Ella.webp'},
+    {id: 'meovv-gawon', name: 'MEOVV: Gawon', image: '/images/MEOVV/Gawon.webp'},
+    {id: 'meovv-narin', name: 'MEOVV: Narin', image: '/images/MEOVV/Narin.webp'},
+    {id: 'meovv-sooin', name: 'MEOVV: Sooin', image: '/images/MEOVV/Sooin.webp'},
+    {id: 'newjeans-danielle', name: 'NewJeans: Danielle', image: '/images/NewJeans/Danielle.webp'},
+    {id: 'newjeans-haerin', name: 'NewJeans: Haerin', image: '/images/NewJeans/Haerin.webp'},
+    {id: 'newjeans-hanni', name: 'NewJeans: Hanni', image: '/images/NewJeans/Hanni.webp'},
+    {id: 'newjeans-hyein', name: 'NewJeans: Hyein', image: '/images/NewJeans/Hyein.webp'},
+    {id: 'newjeans-minji', name: 'NewJeans: Minji', image: '/images/NewJeans/Minji.webp'},
+    {id: 'nmixx-bae', name: 'NMIXX: Bae', image: '/images/NMIXX/Bae.webp'},
+    {id: 'nmixx-haewon', name: 'NMIXX: Haewon', image: '/images/NMIXX/Haewon.webp'},
+    {id: 'nmixx-jinni', name: 'NMIXX: Jinni', image: '/images/NMIXX/Jinni.webp'},
+    {id: 'nmixx-jiwoo', name: 'NMIXX: Jiwoo', image: '/images/NMIXX/Jiwoo.webp'},
+    {id: 'nmixx-kyujin', name: 'NMIXX: Kyujin', image: '/images/NMIXX/Kyujin.webp'},
+    {id: 'nmixx-lily', name: 'NMIXX: Lily', image: '/images/NMIXX/Lily.webp'},
+    {id: 'nmixx-sullyoon', name: 'NMIXX: Sullyoon', image: '/images/NMIXX/Sullyoon.webp'},
+    {id: 'purple kiss-chaein', name: 'PURPLE KISS: Chaein', image: '/images/PURPLE KISS/Chaein.webp'},
+    {id: 'purple kiss-dosie', name: 'PURPLE KISS: Dosie', image: '/images/PURPLE KISS/Dosie.webp'},
+    {id: 'purple kiss-goeun', name: 'PURPLE KISS: Goeun', image: '/images/PURPLE KISS/Goeun.webp'},
+    {id: 'purple kiss-ireh', name: 'PURPLE KISS: Ireh', image: '/images/PURPLE KISS/Ireh.webp'},
+    {id: 'purple kiss-jieun', name: 'PURPLE KISS: Jieun', image: '/images/PURPLE KISS/Jieun.webp'},
+    {id: 'purple kiss-swan', name: 'PURPLE KISS: Swan', image: '/images/PURPLE KISS/Swan.webp'},
+    {id: 'purple kiss-yuki', name: 'PURPLE KISS: Yuki', image: '/images/PURPLE KISS/Yuki.webp'},
+    {id: 'qwer-chodan', name: 'QWER: Chodan', image: '/images/QWER/Chodan.webp'},
+    {id: 'qwer-hina', name: 'QWER: Hina', image: '/images/QWER/Hina.webp'},
+    {id: 'qwer-magenta', name: 'QWER: Magenta', image: '/images/QWER/Magenta.webp'},
+    {id: 'qwer-siyeon', name: 'QWER: Siyeon', image: '/images/QWER/Siyeon.webp'},
+    {id: 'red velvet-irene', name: 'Red Velvet: Irene', image: '/images/Red Velvet/Irene.webp'},
+    {id: 'red velvet-joy', name: 'Red Velvet: Joy', image: '/images/Red Velvet/Joy.webp'},
+    {id: 'red velvet-seulgi', name: 'Red Velvet: Seulgi', image: '/images/Red Velvet/Seulgi.webp'},
+    {id: 'red velvet-wendy', name: 'Red Velvet: Wendy', image: '/images/Red Velvet/Wendy.webp'},
+    {id: 'red velvet-yeri', name: 'Red Velvet: Yeri', image: '/images/Red Velvet/Yeri.webp'},
+    {id: 'stayc-isa', name: 'STAYC: Isa', image: '/images/STAYC/Isa.webp'},
+    {id: 'stayc-j', name: 'STAYC: J', image: '/images/STAYC/J.webp'},
+    {id: 'stayc-seeun', name: 'STAYC: Seeun', image: '/images/STAYC/Seeun.webp'},
+    {id: 'stayc-sieun', name: 'STAYC: Sieun', image: '/images/STAYC/Sieun.webp'},
+    {id: 'stayc-sumin', name: 'STAYC: Sumin', image: '/images/STAYC/Sumin.webp'},
+    {id: 'stayc-yoon', name: 'STAYC: Yoon', image: '/images/STAYC/Yoon.webp'},
+    {id: 'triples-chaewon', name: 'TripleS: ChaeWon', image: '/images/TripleS/ChaeWon.webp'},
+    {id: 'triples-chaeyeon', name: 'TripleS: ChaeYeon', image: '/images/TripleS/ChaeYeon.webp'},
+    {id: 'triples-dahyun', name: 'TripleS: DaHyun', image: '/images/TripleS/DaHyun.webp'},
+    {id: 'triples-hayeon', name: 'TripleS: HaYeon', image: '/images/TripleS/HaYeon.webp'},
+    {id: 'triples-hyerin', name: 'TripleS: HyeRin', image: '/images/TripleS/HyeRin.webp'},
+    {id: 'triples-jiwoo', name: 'TripleS: JiWoo', image: '/images/TripleS/JiWoo.webp'},
+    {id: 'triples-jiyeon', name: 'TripleS: JiYeon', image: '/images/TripleS/JiYeon.webp'},
+    {id: 'triples-joobin', name: 'TripleS: JooBin', image: '/images/TripleS/JooBin.webp'},
+    {id: 'triples-kaede', name: 'TripleS: Kaede', image: '/images/TripleS/Kaede.webp'},
+    {id: 'triples-kotone', name: 'TripleS: Kotone', image: '/images/TripleS/Kotone.webp'},
+    {id: 'triples-lynn', name: 'TripleS: Lynn', image: '/images/TripleS/Lynn.webp'},
+    {id: 'triples-mayu', name: 'TripleS: Mayu', image: '/images/TripleS/Mayu.webp'},
+    {id: 'triples-nakyoung', name: 'TripleS: NaKyoung', image: '/images/TripleS/NaKyoung.webp'},
+    {id: 'triples-nien', name: 'TripleS: Nien', image: '/images/TripleS/Nien.webp'},
+    {id: 'triples-seoah', name: 'TripleS: SeoAh', image: '/images/TripleS/SeoAh.webp'},
+    {id: 'triples-seoyeon', name: 'TripleS: SeoYeon', image: '/images/TripleS/SeoYeon.webp'},
+    {id: 'triples-shion', name: 'TripleS: ShiOn', image: '/images/TripleS/ShiOn.webp'},
+    {id: 'triples-sohyun', name: 'TripleS: SoHyun', image: '/images/TripleS/SoHyun.webp'},
+    {id: 'triples-soomin', name: 'TripleS: SooMin', image: '/images/TripleS/SooMin.webp'},
+    {id: 'triples-sullin', name: 'TripleS: Sullin', image: '/images/TripleS/Sullin.webp'},
+    {id: 'triples-xinyu', name: 'TripleS: Xinyu', image: '/images/TripleS/Xinyu.webp'},
+    {id: 'triples-yeonji', name: 'TripleS: YeonJi', image: '/images/TripleS/YeonJi.webp'},
+    {id: 'triples-yooyeon', name: 'TripleS: YooYeon', image: '/images/TripleS/YooYeon.webp'},
+    {id: 'triples-yubin', name: 'TripleS: YuBin', image: '/images/TripleS/YuBin.webp'},
+    {id: 'twice-chaeyoung', name: 'TWICE: Chaeyoung', image: '/images/TWICE/Chaeyoung.webp'},
+    {id: 'twice-dahyun', name: 'TWICE: Dahyun', image: '/images/TWICE/Dahyun.webp'},
+    {id: 'twice-jeongyeon', name: 'TWICE: Jeongyeon', image: '/images/TWICE/Jeongyeon.webp'},
+    {id: 'twice-jihyo', name: 'TWICE: Jihyo', image: '/images/TWICE/Jihyo.webp'},
+    {id: 'twice-mina', name: 'TWICE: Mina', image: '/images/TWICE/Mina.webp'},
+    {id: 'twice-momo', name: 'TWICE: Momo', image: '/images/TWICE/Momo.webp'},
+    {id: 'twice-nayeon', name: 'TWICE: Nayeon', image: '/images/TWICE/Nayeon.webp'},
+    {id: 'twice-sana', name: 'TWICE: Sana', image: '/images/TWICE/Sana.webp'},
+    {id: 'twice-tzuyu', name: 'TWICE: Tzuyu', image: '/images/TWICE/Tzuyu.webp'}
 ];
 
 var myPicker = new picker.Picker({
     items: items,
+    localStorageKey: 'picker-state',
     defaultSettings: {
         minBatchSize: 2,
         maxBatchSize: 2
@@ -350,6 +448,7 @@ var pickerUI = new PickerUI(myPicker, {
         pass: "#pass",
         undo: "#undo",
         redo: "#redo",
+        reset: "#reset",
         evaluating: "#evaluating",
         favorites: "#favorites"
     }
